@@ -1,11 +1,47 @@
-# fast api k andar FastApi import karwaayen gy
-from fastapi import FastAPI
+
+"""
+1. fast api k andar FastApi import karwaayen gy
+
+2. The Path() function in FastAPI is used to provide metadata, validation rules,
+and documentation hints for path parameters in your API endpoints.
+Title
+Description
+Example
+ge, gt, le, lt(greater then equal to ,greater then,less than equal to, less than)(yaani ya validation add kar sakty hain asy)
+Min_length
+Max_length
+regex
+
+3. Ab hum ya karain gy k agar client yaani jo id naa milii to hum status code generate karain gy 404
+ aur iss k custom exception class chahiye jisko hum HttpException likhain gy
+
+HTTPException is a special built-in exception in FastAPI used to return custom HTTP error responses
+when something goes wrong in your API.Instead of returning a normal JSON or crashing the server,
+ you can gracefully raise an error with:
+ a proper HTTP status code (like 404, 400, 403, etc.)
+ a custom error message
+ (optional) extra headers
+
+"""
+from fastapi import FastAPI ,Path,HTTPException
+# json file ko read karny k liye json model kii zarorat parray gii
+import json
 # app object banaatay hain jo FastApi ka object hota ha
 app=FastAPI()
 
-"""# endpoint k liye route define karna parray ga
-hum server pa data da kar dekhna chahty hain iss liye get requestiss k baad
-decorator kii help sa route define karna ha yahan aur route hoga slash / ab path define kar liya ha"""
+# helper function
+def load_data():
+    with open('patients.json','r') as f:
+        data =json.load(f)
+    return data
+
+
+
+'''
+Endpoint k liye route define karna parray ga
+hum server pa data da kar dekhna chahty hain iss liye get requests k baad decorator kii
+ help sa route define karna ha yahan aur route hoga slash / ab path define kar liya ha
+'''
 
 @app.get("/")
 
@@ -14,18 +50,22 @@ decorator kii help sa route define karna ha yahan aur route hoga slash / ab path
 # ya humari first API ha
 
 def hello():
-    return {'message':'hello world'}
+    return {'message':'Patient Management System API'}
 
 
 """ Ab file ko run karny k liye ya command ha
  uvicorn file name(main) : object name (app) phr space daal kar --reload
 Jasy hii ya command run karain gy behind the scenes uvicorn server start ho jaaye ga
-aur wo http pa request sunny lag jaaye ga"""
+aur wo http pa request sunny lag jaaye ga
+
+
+Ab humny project pa kaam start kiya ha aur iss file ko update kar ry hain
+"""
 
 
 @app.get("/about")
 def about():
-    return {"message":"I am maryam"}
+    return {"message":"A fully Functional API to manage to manage your patient records"}
 
 
 '''
@@ -36,3 +76,88 @@ Ab agar hum apni API jo bnaaai iss pa slash/ laga k docs likh k eneter maarain g
 generated documentation dekhaai dega
 Hum 2no endpoints pa jaa kar try it out kar sakty hain
 '''
+
+
+# Ab aik endpoint banaana ha jiska naam hoga view aur jasy hii koi iss endpoint ko hit karay ga
+# to jitny bhi patients humaary hain unn ka data client ko bhaj dain gy 
+# End point banaany sa pehly patients.json ma sa data load karny k liye aik function likhna 
+# parray ga because ya kaam humy baar baar karna ha agy bhi jab hum endpoint banaayen gy patients.json
+# file ma sa record nikaalny parrain gy...ab upar helper function banaayen gy
+
+
+# Ya endpoints sab patients ka data cliet ko deta ha
+
+@app.get("/view")
+def view():
+# jasy hii request atii ha sabsy pehly data fetch kar k laayen gy using load_data function
+    data=load_data()
+    # phr simply uss data ko as it isreturn kar dain gy
+    return data
+
+"""
+Ab yahan aik endpoint create karain gy ya code hoga k client/user apni passand ka patient ka data
+dekh sakta ha ya URL k through pata chalay ga k ya konsa patient hoga aur ya humy path parameters
+k through pata chalay ga
+
+Aur ab banaana start kiya aur yahan patient_Id variable kii tarha define kar diya,kyun k abhi humy
+ni pata patient future ma kis patient ka data dekhna chahta ha
+
+Ab view_patient naam sa function banaayen gy aur ab view_patient ko kaam karny k liye aik patient_id 
+chahiye to humy opar route ma jo patient_id mil ree ha wohii yahan paas kar dain gy aur saath data
+Type bhi specify kar dain gy jo k string ha kyun k json file ma string format ma hain ids.
+
+Ab function ma definition create karna ha function ka logic likhna ha aur function ka logic boht simple
+ha like sabsy pehly poora patient ka data load karain gy phir search karain gy k ya particular patient
+id exist karta ha ya ni aur agar karta ha to wo data dekhaa dain gy agar ni to bolain gy its an error
+
+Ab hum sab patients ko load karain gy(previous lecture ma humny aik utility function banaaya tha jis sy
+data load kar sakty hain )
+
+Yani ya particular patient_id as key humaary data ma exist kartii ha? Agar kartii ha to...
+
+return karay data k andar sa patient_id
+
+Agar nahi ha to error msg return karay patient not found
+
+"""
+@app.get('/patient/{patient_id}') 
+#jahan par path parameter ko recieve kar ry hoty hain wahin par = path function call kar dety hain
+# Aur three dots(...) ka matlab ha ya filed required ha  (aur ya sab karny sa readability improve hoii ha...aur ya first improvement kii humny )
+def view_patient(patient_id:str=Path( ..., description='Id of the patient in the DB',example='P001')): 
+    # load all the patients
+    data=load_data()
+    if patient_id in data:
+        return data[patient_id]
+    # return {'error':'patient not found'}  ya normal json return ho ree ha iss kii bajaayen hum gracefully error raise karain gy
+    raise HTTPException(status_code=404,detail='Patient not found')
+"""
+2nd improvement: Http status code are 3 digit numbers returned by a web server like FastApi
+ to indicate the result of a clients requests like from browser or API consumer
+
+ Ab iss ma problem ya ha k patioent ma jaa k  agar hum asee id daalty hain jo present hii ni 
+ ha wahaan to humy 200 hii dekha ra means success humy not found dekhaana chhaiye like 404
+
+ Ab hum ya karain gy k agar client yaani jo id naa milii to hum status code generate karain gy 404
+ aur iss k custom exception class chahiye jisko hum HttpException likhain gy
+"""
+
+
+
+"""
+Definition Query Parameter
+ Query parameters are optional key-value pairs appended to the end of a URL, used to pass
+ additional data to the server in an HTTP request. They are typically employed for operations 
+ like filtering, sorting, searching, and pagination, without altering the endpoint path itself.
+URL Example:
+   /patients?city=Delhi&sort_by=ageKey 
+Rules:
+   The ? marks the start of query parameters.
+   Each parameter is a key-value pair: key=value
+   Multiple parameters are separated by &
+Breakdown of the Example
+   In this case:
+   city=Delhi is a query parameter for filtering
+   sort_by=age is a query parameter for sorting
+
+"""
+
