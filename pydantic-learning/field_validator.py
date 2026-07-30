@@ -24,7 +24,8 @@ class Patient(BaseModel):
     @classmethod
     def transform_name(cls,value):
         return value.upper()
-    @field_validator('age')
+    @field_validator('age',mode="after")   #Aur default value yaani mode hataa dain to default value after hii hotii ha
+     #yahan agar mode before set karain to ya type coercion ni hogii aur age ma error aye ga jis sa age ma jo value ha wo string show hogiii jo k type coercion sa pehly waali value hogii
     @classmethod
     def validate_age(cls,value):
         if 0<value<100:
@@ -34,7 +35,7 @@ class Patient(BaseModel):
 # Raw input data
 patient_info = {
     "name": "Maryam",
-    "age": 88,
+    "age": '88',  #yahan age string ma dii ha agar ya opar acess karain to type coercion k baad kii value da ga like mode ='after' sa
     "weight": 70.5,
     "married": "True",
     "email": "maryam11@hdfc.com",

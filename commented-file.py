@@ -250,6 +250,27 @@ class Patient(BaseModel):
     linkedin_url:AnyUrl
     allergies:Optional[List[str]]=None #Yahan ab agar hum koi field add ni karty to yahan None dekhaaye ga
     allergies:Optional[List[str]]=Field(max_length=5)
+    @field_validator('email')
+    @classmethod
+    def email_validator(cls,value):
+        valid_domains=['hdfc.com','icici.com']
+        # abc@gmail.com
+        domain_name=value.split('@')[-1]
+        if domain_name not in valid_domains:
+            raise ValueError('Not a valid domain')
+        return value
+    @field_validator('name')
+    @classmethod
+    def transform_name(cls,value):
+        return value.upper()
+    @field_validator('age',mode="after")   #Aur default value yaani mode hataa dain to default value after hii hotii ha
+         #yahan agar mode before set karain to ya type coercion ni hogii aur age ma error aye ga jis sa age ma jo value ha wo string show hogiii jo k type coercion sa pehly waali value hogii
+    @classmethod
+    def validate_age(cls,value):
+        if 0<value<100:
+           return value
+        raise('Age should be in between o and 100')
+    
 
 
       #Humny idhar akela List iss liye ni likha kyun k humny list k saath ya bhi validate karna tha k list k andar jo values hongee wo string type kii hongee 
@@ -279,3 +300,4 @@ insert_patient_data(patient1)
 
 # ========Ya humny barra aur complex banaana seekha aur use karna
 # Next Step is Field validator
+
