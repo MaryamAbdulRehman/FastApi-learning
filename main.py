@@ -186,3 +186,5 @@ def create_patient(patient: Patient):
         status_code=201,
         content={"message": "Patient Created Successfully"}
     )
+
+    # update function
