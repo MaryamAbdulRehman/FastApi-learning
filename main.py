@@ -188,7 +188,7 @@ def create_patient(patient: Patient):
     )
 
     # update Patient
-@app.put('/exit/{patient_id')
+@app.put('/edit/{patient_id}')
 def update_patient(patient_id:str,patient_update:PatientUpdate):
     # Load Existing Data
     data=load_data()
@@ -215,5 +215,26 @@ def update_patient(patient_id:str,patient_update:PatientUpdate):
     return{
         'message':'Patient Updated Successfully'
     }
+
+    # Delete Endpoint
+@app.delete('/delete/{patient_id}')
+def delete_patient(patient_id:str):
+        
+        # Load data
+    data =load_data()
+
+    # Check karain gy k jo patient provide kiya jaa ra wo exist bhi karta ha ya nahiii
+    if patient_id not in data:
+         
+        raise HTTPException(status_code=404,detail='Patient not Found')
+        
+    # Agar Data ha to..
+    del data[patient_id]
+
+    # Save kiya
+    save_data(data)
+
+    return JSONResponse(status_code=200,content={'message':'Patient Deleted'})
+
 
 
