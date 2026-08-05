@@ -47,7 +47,7 @@ class PatientUpdate(BaseModel):
     name:Annotated[Optional[str] ,Field(default=None)]
     city:Annotated[Optional[str],Field(default=None)]
     age:Annotated[Optional[int],Field(default=None,gt=0)]
-    gender:Annotated[Literal['Male','Female','Others'],Field(default=None)]
+    gender:Annotated[Optional[Literal['Male','Female','other']],Field(default=None)]
     height:Annotated[Optional[float],Field(default=None,gt=0)]
     weight:Annotated[Optional[float],Field(default=None,gt=0)]
 
@@ -187,4 +187,33 @@ def create_patient(patient: Patient):
         content={"message": "Patient Created Successfully"}
     )
 
-    # update function
+    # update Patient
+@app.put('/exit/{patient_id')
+def update_patient(patient_id:str,patient_update:PatientUpdate):
+    # Load Existing Data
+    data=load_data()
+    # Check if patient exists
+    if patient_id not in data:
+        raise HTTPException(status_code=404,detail='Patient not Found')
+    # Get Existing Patient Information
+    existing_patient_info=data[patient_id]
+    # Convert Pydantic object to Dictionary
+    updated_patient_info=patient_update.model_dump(exclude_unset=True)
+    # Update only Provided Fields
+    for key,value in updated_patient_info.items():
+        existing_patient_info[key]=value
+    # Add id because the patient model requires it
+    existing_patient_info['id']=patient_id
+    # Convert Dictionary to patient object
+    patient_obj=Patient(**existing_patient_info)
+    # Convert back to dictionary
+    existing_patient_info=patient_obj.model_dump(exclude={'id'})
+    # Save Updated Patient
+    data[patient_id]=existing_patient_info
+    # Save Database
+    save_data(data)
+    return{
+        'message':'Patient Updated Successfully'
+    }
+
+
