@@ -231,11 +231,10 @@ def delete_patient(patient_id:str):
     # Agar Data ha to..
     del data[patient_id]
 
-    # Save kiya
+    # Save kiya data
     save_data(data)
 # Return JSON Response
     return JSONResponse(status_code=200,content={'message':'Patient Deleted'})
-
 
 
 
