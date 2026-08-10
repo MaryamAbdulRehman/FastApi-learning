@@ -235,6 +235,7 @@ def delete_patient(patient_id:str):
     save_data(data)
 # Return JSON Response
     return JSONResponse(status_code=200,content={'message':'Patient Deleted'})
+    
 
 
 
