@@ -238,3 +238,6 @@ def delete_patient(patient_id:str):
 #Machine learning Journey here ML end 
 
 
+# Deep learn
+
+
