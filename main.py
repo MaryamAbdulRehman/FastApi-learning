@@ -235,19 +235,8 @@ def delete_patient(patient_id:str):
     save_data(data)
 # Return JSON Response
     return JSONResponse(status_code=200,content={'message':'Patient Deleted'})
-#Machine learning Journey here ML end 
 
+#Next Step is Machine learning
 
-# Deep learning
-
-#Machine learning
-
-# Pydantic
-
-# Pytorch
-
-# NLP 
-
-# GFPGAN
 
 
