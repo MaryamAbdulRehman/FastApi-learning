@@ -246,6 +246,8 @@ def delete_patient(patient_id:str):
 
 # Pytorch
 
-# NLP
+# NLP 
+
+# GFPGAN
 
 
