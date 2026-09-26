@@ -238,5 +238,7 @@ def delete_patient(patient_id:str):
 
 #Next Step is Machine learning
 
+# Then Deep learni8ng
+
 
 
