@@ -246,7 +246,7 @@ def delete_patient(patient_id:str):
 
 # NLP
 
-# Hallucination
+# Hallucinations
 
 
 
