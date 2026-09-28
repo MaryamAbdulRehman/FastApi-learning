@@ -236,17 +236,6 @@ def delete_patient(patient_id:str):
 # Return JSON Response
     return JSONResponse(status_code=200,content={'message':'Patient Deleted'})
 
-#Next Step is Machine learning
-
-# Then Deep learning
-
-# Pytorch
-
-# Libraries....LLMS
-
-# NLP
-
-# Hallucinations
 
 
 
